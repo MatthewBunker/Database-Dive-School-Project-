@@ -69,8 +69,7 @@ public class jdbcpostgreSQL {
 				case 5:
 					System.out.println("Review selected");
 					initPass = false;
-					//Insert Review function here (when available)
-					System.out.println("Review entity currently not populated, so closing");
+					Review.main();
 					break;
 				case 6:
 					System.out.println("User Compliments selected");
@@ -80,8 +79,7 @@ public class jdbcpostgreSQL {
 				case 7:
 					System.out.println("Tip selected");
 					initPass = false;
-					//Insert Tips function here (when available)
-					System.out.println("Tip entity currently not populated, so closing");
+					Tip.main();
 					break;
 				 default:
 					System.out.println("Invalid argument");
