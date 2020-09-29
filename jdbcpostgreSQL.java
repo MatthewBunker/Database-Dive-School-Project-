@@ -43,34 +43,45 @@ public class jdbcpostgreSQL {
 			int option = input.nextInt();
 			switch(option) {
 				case 0:
+					System.out.println("Close selected");
+					initPass = false;
 					break;
 				case 1:
 					System.out.println("Checkin selected");
 					initPass = false;
+					CheckIn.main();
 					break;
 				case 2:
 					System.out.println("Address selected");
 					initPass = false;
+					Address.main();
 					break;
 				case 3:
 					System.out.println("Parking selected");
 					initPass = false;
+					Parking.main();
 					break;
 				case 4:
 					System.out.println("Star rating selected");
 					initPass = false;
+					StarRating.main();
 					break;
 				case 5:
 					System.out.println("Review selected");
 					initPass = false;
+					//Insert Review function here (when available)
+					System.out.println("Review entity currently not populated, so closing");
 					break;
 				case 6:
 					System.out.println("User Compliments selected");
 					initPass = false;
+					UserCompliments.main();
 					break;
 				case 7:
 					System.out.println("Tip selected");
 					initPass = false;
+					//Insert Tips function here (when available)
+					System.out.println("Tip entity currently not populated, so closing");
 					break;
 				 default:
 					System.out.println("Invalid argument");
