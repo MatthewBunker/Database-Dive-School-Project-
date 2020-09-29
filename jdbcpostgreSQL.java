@@ -49,37 +49,37 @@ public class jdbcpostgreSQL {
 				case 1:
 					System.out.println("Checkin selected");
 					initPass = false;
-					CheckIn.main();
+					CheckIn.main(conn);
 					break;
 				case 2:
 					System.out.println("Address selected");
 					initPass = false;
-					Address.main();
+					Address.main(conn);
 					break;
 				case 3:
 					System.out.println("Parking selected");
 					initPass = false;
-					Parking.main();
+					Parking.main(conn);
 					break;
 				case 4:
 					System.out.println("Star rating selected");
 					initPass = false;
-					StarRating.main();
+					StarRating.main(conn);
 					break;
 				case 5:
 					System.out.println("Review selected");
 					initPass = false;
-					Review.main();
+					Review.main(conn);
 					break;
 				case 6:
 					System.out.println("User Compliments selected");
 					initPass = false;
-					UserCompliments.main();
+					UserCompliments.main(conn);
 					break;
 				case 7:
 					System.out.println("Tip selected");
 					initPass = false;
-					Tip.main();
+					Tip.main(conn);
 					break;
 				 default:
 					System.out.println("Invalid argument");
