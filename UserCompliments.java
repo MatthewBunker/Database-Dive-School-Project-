@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.*;
 
 public class UserCompliments{
-	public static void main(Connection conn) {
+	public static void main(Connection conn, String user_id, boolean user_bool) {
 		//Connection conn = null;
 		try {	
 			Scanner input = new Scanner(System.in);
@@ -11,6 +11,7 @@ public class UserCompliments{
 			System.out.println("2: Top 10 Funny Users");
 			System.out.println("3: Top 10 Cool Users");
 			int option = input.nextInt();
+
 			//create a statement object
 			Statement stmt = conn.createStatement();
 			String sqlStatement = "SELECT * FROM \"User Compliments\" ORDER BY \"Useful\" DESC LIMIT 10";
