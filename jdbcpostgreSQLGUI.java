@@ -48,15 +48,17 @@ public class jdbcpostgreSQLGUI {
 			boolean name_bool = false;
 			String user_id = "";
 			boolean user_bool = false;
+			String business_id = "";
+			boolean id_bool = false;
 			if(optionInt != 6 && optionInt != 8 && optionInt != 0){
-				business_name = JOptionPane.showInputDialog(null, "Enter desired business name or enter N/A\n"
-																+ "Examples: \"Burger King\" or \"Starbucks\"");
+				business_id = JOptionPane.showInputDialog(null, "Enter desired business id or enter N/A\n"
+																+ "Examples: \"f9NumwFMBDn751xgFiRbNA\" ");
 				
-				if(business_name.equals("N/A")){
-					name_bool = false;
+				if(business_id.equals("N/A")){
+					id_bool = false;
 				}
 				else{
-					name_bool = true;
+					id_bool = true;
 				}
 			}
 			else if(optionInt == 6 || optionInt == 8 && optionInt != 0){
@@ -69,6 +71,18 @@ public class jdbcpostgreSQLGUI {
 					user_bool = true;
 				}
 			}
+			else{ // option == 1
+				System.out.println("Enter desired business id or enter N/A");
+				Scanner input2 = new Scanner(System.in);
+				business_id = input2.nextLine();
+
+				if(business_id.equals("N/A")){
+					id_bool = false;
+				}
+				else{
+					id_bool = true;
+				}
+			}
 	
 			switch(optionInt) {
 				case 0:
@@ -78,7 +92,7 @@ public class jdbcpostgreSQLGUI {
 				case 1:
 					JOptionPane.showMessageDialog(null,"Checkin selected");
 					initPass = false;
-					CheckIn.main(conn, business_name, name_bool);
+					CheckIn.main(conn, business_id, id_bool);
 					break;
 				case 2:
 					JOptionPane.showMessageDialog(null,"Address selected");
