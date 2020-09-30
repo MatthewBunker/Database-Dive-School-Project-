@@ -113,7 +113,8 @@ public class jdbcpostgreSQLGUI {
 				//System.out.println("Enter desired business name or enter N/A");
 				//Scanner input2 = new Scanner(System.in);
 				//business_name = input2.nextLine();
-				business_name = JOptionPane.showInputDialog(null, "Enter desired business name or enter N/A");
+				business_name = JOptionPane.showInputDialog(null, "Enter desired business name or enter N/A\n"
+																+ "Examples: \"Burger King\" or \"Starbucks\"");
 				
 				if(business_name.equals("N/A")){
 					name_bool = false;
@@ -126,7 +127,8 @@ public class jdbcpostgreSQLGUI {
 				//System.out.println("Enter desired user ID or enter N/A");
 				//Scanner input2 = new Scanner(System.in);
 				//user_id = input2.nextLine();
-				user_id = JOptionPane.showInputDialog(null, "Enter desired user ID or enter N/A");
+				user_id = JOptionPane.showInputDialog(null, "Enter desired user ID or enter N/A\n"
+														  + "Examples: \"--2vR0DIsmQ6WfcSzKWigw\"");
 				if(user_id.equals("N/A")){
 					user_bool = false;
 				}
