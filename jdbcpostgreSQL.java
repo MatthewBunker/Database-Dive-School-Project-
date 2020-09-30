@@ -49,8 +49,10 @@ public class jdbcpostgreSQL {
 			boolean name_bool = false;
 			String user_id = "";
 			boolean user_bool = false;
-			if(option != 6 && option != 8 && option != 0){
-				System.out.println("Enter desired business name or enter N/A (such as \“Burger King\” or \“Starbucks\”)");
+			String business_id = "";
+			boolean id_bool = false;
+			if(option != 1 && option != 6 && option != 8 && option != 0){
+				System.out.println("Enter desired business name or enter N/A: ");
 				Scanner input2 = new Scanner(System.in);
 				business_name = input2.nextLine();
 
@@ -73,6 +75,18 @@ public class jdbcpostgreSQL {
 					user_bool = true;
 				}
 			}
+			else{ // option == 1
+				System.out.println("Enter desired business id or enter N/A");
+				Scanner input2 = new Scanner(System.in);
+				business_id = input2.nextLine();
+
+				if(business_id.equals("N/A")){
+					id_bool = false;
+				}
+				else{
+					id_bool = true;
+				}
+			}
 	
 			switch(option) {
 				case 0:
@@ -82,7 +96,7 @@ public class jdbcpostgreSQL {
 				case 1:
 					System.out.println("Checkin selected");
 					initPass = false;
-					CheckIn.main(conn, business_name, name_bool);
+					CheckIn.main(conn, business_id, id_bool);
 					break;
 				case 2:
 					System.out.println("Address selected");
