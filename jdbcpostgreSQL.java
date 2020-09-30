@@ -50,7 +50,7 @@ public class jdbcpostgreSQL {
 			String user_id = "";
 			boolean user_bool = false;
 			if(option != 6 && option != 8 && option != 0){
-				System.out.println("Enter desired business name or enter N/A");
+				System.out.println("Enter desired business name or enter N/A (such as \“Burger King\” or \“Starbucks\”)");
 				Scanner input2 = new Scanner(System.in);
 				business_name = input2.nextLine();
 
