@@ -11,7 +11,7 @@ public class CheckIn{
 			String output = "";
 			JOptionPane.showInputDialog(null,"Welcome! Press any key to continue.");
 
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			// SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			Statement stmt = conn.createStatement();
 			String sqlStatement = String.format("SELECT * FROM \"Checkin\" LIMIT 2"); // SELECT * FROM "Checkin" LIMIT 2;
