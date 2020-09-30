@@ -17,7 +17,7 @@ public class CheckIn{
 			String sqlStatement = String.format("SELECT * FROM \"Checkin\" LIMIT 2"); // SELECT * FROM "Checkin" LIMIT 2;
 			ResultSet result = stmt.executeQuery(sqlStatement);	
 
-			output += "Business_ID         | Date\n";
+			output += "Business_ID          | Date\n";
 
 			while (result.next()){
 				output += result.getString("Business_ID") + " | " + result.getString("Date") + "\n"; 
