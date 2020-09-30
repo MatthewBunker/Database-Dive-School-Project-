@@ -37,12 +37,13 @@ public class Hours{
 						}
 						break;
                     case 2:
+                        String output="";
 						System.out.println("Business Name                | Hours");
 						System.out.println("_______________________________");
 
 						while(result.next()){
                             output += business_name + " | " + result.getString("Monday") + " | " + result.getString("Tuesday") + " | " + result.getString("Wednesday") + " | " + result.getString("Thursday")
-                            + " | " + result.getString("Friday") + " | " + result.getString("Saturday") + " | " + result.getString("Sunday");
+                            + " | " + result.getString("Friday") + " | " + result.getString("Saturday") + " | " + result.getString("Sunday") + "\n";
                         }
                         System.out.println(business_name + " | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday");
                         System.out.println(output);
