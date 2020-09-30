@@ -1,18 +1,21 @@
 import java.sql.*;
 import java.util.Scanner;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 public class UserCompliments{
 	public static void main(Connection conn, String user_id, boolean user_bool) {
 		//Connection conn = null;
-		try {	
-			Scanner input = new Scanner(System.in);
-			System.out.println("1: Top 10 Useful Users");
-			System.out.println("2: Top 10 Funny Users");
-			System.out.println("3: Top 10 Cool Users");
-			int option = input.nextInt();
+		try {
+			String output = "";
+			String option = JOptionPane.showInputDialog(null,"0: Close\n"
+										    + "1: Top 10 Useful Users\n"
+											+ "2: Top 10 Funny Users\n"
+											+ "3: Top 10 Cool Users\n"
+											+ "Input desired command (enter \"1\" for Top 10 Useful Users): ");
+			int optionInt = Integer.parseInt(option);
 			String option2 = null;
-			switch (option) {
+			switch (optionInt) {
 				case 1:
 					option2 = "Useful";
 					break;
@@ -29,40 +32,31 @@ public class UserCompliments{
 			Statement stmt = conn.createStatement();
 			String sqlStatement = String.format("SELECT * FROM \"User Compliments\" ORDER BY \"%s\" DESC LIMIT 10", option2);
 			ResultSet result = stmt.executeQuery(sqlStatement);
-			switch (option) {
+			switch (optionInt) {
 				case 1:
-					System.out.println("User ID                | Useful");
-					System.out.println("_______________________________");
 					while (result.next()) {
-						System.out.print(result.getString("User_ID"));
-						System.out.print(" | ");
-						System.out.println(result.getString("Useful"));
+						output += result.getString("User_ID") + " | " + result.getString("Useful") + "\n";
 					}
+					JOptionPane.showMessageDialog(null,"User ID | Useful\n" + output);
 					break;
 				case 2:
-					System.out.println("User ID                | Funny");
-					System.out.println("_______________________________");
 					while (result.next()) {
-						System.out.print(result.getString("User_ID"));
-						System.out.print(" | ");
-						System.out.println(result.getString("Funny"));
+						output += result.getString("User_ID") + " | " + result.getString("Funny") + "\n";
 					}
+					JOptionPane.showMessageDialog(null,"User ID | Funny\n" + output);
 					break;
 				case 3:
-					System.out.println("User ID                | Cool");
-					System.out.println("_______________________________");
 					while (result.next()) {
-						System.out.print(result.getString("User_ID"));
-						System.out.print(" | ");
-						System.out.println(result.getString("Cool"));
+						output += result.getString("User_ID") + " | " + result.getString("Cool") + "\n";
 					}
+					JOptionPane.showMessageDialog(null,"User ID | Cool\n" + output);
 					break;
 				default:
-					System.out.println("Invalid Argument: Closing");
+					JOptionPane.showMessageDialog(null,"Invalid Argument");
 					break;
 			}
 		} catch (Exception e) {
-			System.out.println("Error accessing Database.");
+			JOptionPane.showMessageDialog(null,"Error accessing Database.");
 		}
 	}
 }
