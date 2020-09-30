@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 //display parking record(s) of corresponding business(es)
 public class CheckIn{
-	public static void main(Connection conn, String business_id, boolean id_bool) {
+	public static void main(Connection conn) {
 		try {
 			String output = "";
 			JOptionPane.showInputDialog(null,"Welcome! Press any key to continue.");
