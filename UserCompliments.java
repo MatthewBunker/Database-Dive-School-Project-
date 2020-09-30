@@ -11,10 +11,23 @@ public class UserCompliments{
 			System.out.println("2: Top 10 Funny Users");
 			System.out.println("3: Top 10 Cool Users");
 			int option = input.nextInt();
-
+			String option2 = null;
+			switch (option) {
+				case 1:
+					option2 = "Useful";
+					break;
+				case 2:
+					option2 = "Funny";
+					break;
+				case 3:
+					option2 = "Cool";
+					break;
+				default:
+					break;
+			}
 			//create a statement object
 			Statement stmt = conn.createStatement();
-			String sqlStatement = "SELECT * FROM \"User Compliments\" ORDER BY \"Useful\" DESC LIMIT 10";
+			String sqlStatement = String.format("SELECT * FROM \"User Compliments\" ORDER BY \"%s\" DESC LIMIT 10", option2);
 			ResultSet result = stmt.executeQuery(sqlStatement);
 			switch (option) {
 				case 1:
