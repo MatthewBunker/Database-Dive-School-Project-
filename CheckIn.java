@@ -49,8 +49,6 @@ public class CheckIn{
 					System.out.println("Invalid argument");
 					break;
 				}
-				
-
 			} // end of if		
 		} 
 		catch (Exception e) {
