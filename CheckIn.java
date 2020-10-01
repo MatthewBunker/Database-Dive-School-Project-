@@ -14,7 +14,7 @@ public class CheckIn{
 			// SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			Statement stmt = conn.createStatement();
-			String sqlStatement = String.format("SELECT * FROM \"Checkin\" LIMIT 2"); // SELECT * FROM "Checkin" LIMIT 2;
+			String sqlStatement = String.format("SELECT * FROM \"Checkin\" LIMIT 10"); // SELECT * FROM "Checkin" LIMIT 10;
 			ResultSet result = stmt.executeQuery(sqlStatement);	
 
 			output += "Business_ID          | Date\n";
