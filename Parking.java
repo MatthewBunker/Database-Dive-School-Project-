@@ -1,8 +1,6 @@
 import java.sql.*;
 import javax.swing.JOptionPane;
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 
@@ -11,7 +9,6 @@ public class Parking{
 		try {
 			JDialog parking_dialog = new JDialog();
 			JOptionPane optionPane;
-			//create a statement object
 			if (name_bool == false){
 				String output = "";
 				if(business_name != ""){
@@ -21,15 +18,16 @@ public class Parking{
 					while(result.next()) {
 						output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
 					}
-				}else if (business_id != ""){
+				}
+				if (business_id != ""){
 					Statement stmt = conn.createStatement();
 					String sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"business_id\"=\'%s\'", business_id);
+					System.out.println(sqlStatement);
 					ResultSet result = stmt.executeQuery(sqlStatement);
 					while(result.next()) {
 						output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
 					}
 				}
-				// JOptionPane.showMessageDialog(null, "Parking information for "+business_name + "\n" + output);
 				Object[] inputFields = {output};
 				optionPane = new JOptionPane(inputFields, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 				parking_dialog.setContentPane(optionPane);
@@ -156,6 +154,37 @@ public class Parking{
 				check_search.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						checkbox_dialog.dispose();
+						String area = "";
+						String area_name = "";
+						if(!ct_input.getText().isBlank()){
+							area = "city";
+							area_name = ct_input.getText();
+						}
+						if(!st_input.getText().isBlank()){
+							area = "state";
+							area_name = st_input.getText();
+						}
+						if(!pc_input.getText().isBlank()){
+							area = "postal code";
+							area_name = pc_input.getText();
+						}
+						String statement = "";
+						if(check1.isSelected()){
+							statement += " AND \"Parking\".\"Validated\" = 't'";
+						}
+						if(check2.isSelected()){
+							statement += " AND \"Parking\".\"Valet\" = 't'";
+						}
+						if(check3.isSelected()){
+							statement += " AND \"Parking\".\"Street\" = 't'";
+						}
+						if(check4.isSelected()){
+							statement += " AND \"Parking\".\"Garage\" = 't'";
+						}
+						if(check5.isSelected()){
+							statement += " AND \"Parking\".\"Lot\" = 't'";
+						}
+						output_method(conn, area, area_name, statement);
 					}
 				});
 
@@ -167,45 +196,13 @@ public class Parking{
 				checkbox_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				checkbox_dialog.pack();
 				checkbox_dialog.setLocationRelativeTo(null);
-
-				String area = "";
-				String area_name = "";
-				if(!ct_input.getText().isBlank()){
-					area = "city";
-					area_name = ct_input.getText();
-				}
-				if(!st_input.getText().isBlank()){
-					area = "state";
-					area_name = st_input.getText();
-				}
-				if(!pc_input.getText().isBlank()){
-					area = "postal code";
-					area_name = pc_input.getText();
-				}
-
-				String statement = "";
-				if(check1.isSelected()){
-					statement += " AND \"Parking\".\"Validated\" = 't'";
-				}
-				if(check2.isSelected()){
-					statement += " AND \"Parking\".\"Valet\" = 't'";
-				}
-				if(check3.isSelected()){
-					statement += " AND \"Parking\".\"Street\" = 't'";
-				}
-				if(check4.isSelected()){
-					statement += " AND \"Parking\".\"Garage\" = 't'";
-				}
-				if(check5.isSelected()){
-					statement += " AND \"Parking\".\"Lot\" = 't'";
-				}
 			}
 		} catch (Exception e) {
 			System.out.println("Error accessing Database.");
 		}
 	}
 
-	public void output_method(Connection conn, String area_name, String area, String statement){
+	public static void output_method(Connection conn, String area, String area_name, String statement){
 		try{
 			JDialog output_dialog = new JDialog();
 			Statement stmt = conn.createStatement();
