@@ -183,70 +183,27 @@ public class Business{
 						JOptionPane.showMessageDialog(null, output);
 						break;
 				}
-				/*
-				String sqlStatement = "SELECT * FROM \"business\" LIMIT 10";
-				ResultSet result = stmt.executeQuery(sqlStatement);
-
-				switch(option){
-					case 1:
-						System.out.println("Business Name                | Category");
-						System.out.println("_______________________________");
-
-						while(result.next()){
-							System.out.print(result.getString("Name"));
-							System.out.print(" | ");
-							System.out.println(result.getString("category"));
-						}
-						break;
-					case 2:
-						System.out.println("Business Name                | Take out");
-						System.out.println("_______________________________");
-
-						while(result.next()){
-							System.out.print(result.getString("Name"));
-							System.out.print(" | ");
-							//take out has invisible space at end of it
-							System.out.println(result.getString("take out "));
-						}
-						break;
-					case 3:
-						System.out.println("Business Name                | Rating");
-						System.out.println("_______________________________");
-
-						while(result.next()){
-							System.out.print(result.getString("Name"));
-							System.out.print(" | ");
-							System.out.println(result.getString("rating"));
-						}
-						break;
-					case 4:
-						System.out.println("Business Name                | Business ID");
-						System.out.println("_______________________________");
-
-						while(result.next()){
-							System.out.print(result.getString("Name"));
-							System.out.print(" | ");
-							System.out.println(result.getString("business_id"));
-						}
-						break;
-					case 5:
-						System.out.println("Business Name");
-						System.out.println("_______________________________");
-
-						while(result.next()){
-							System.out.println(result.getString("Name"));
-						}
-						break;
-					default:
-						System.out.println("Invalid Argument: Closing");
-						break;
-				}
-				*/
 			}				
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null,"Error accessing Database.");
 			//System.out.println("Error accessing Database.");
 		}
+	}
+
+	public static void shortest_chain_main(Connection conn, String business_1, String business_2){
+		//h
+	}
+
+	public static void franchise_restaurant_main(Connection conn, String state){
+		//h
+	}
+
+	public static void local_restaurant_main(Connection conn, String state){
+		//h
+	}
+
+	public static void rated_business_main(Connection conn, String category, String city){
+		//h
 	}
 }
