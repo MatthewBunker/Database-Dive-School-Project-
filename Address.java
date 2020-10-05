@@ -2,10 +2,10 @@ import java.sql.*;
 import javax.swing.JOptionPane;
 
 public class Address{
-	public static void main(Connection conn, String business_name, boolean name_bool) {
+	public static void main(Connection conn, String business_name, String business_id, boolean name_bool) {
 		try {
 			//create a statement object
-			if (name_bool == true){
+			if (name_bool == false){
 				Statement stmt = conn.createStatement();
 				String sqlStatement = String.format("SELECT \"address\", \"city\", \"state\", \"postal code\" FROM \"business\" LEFT JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
 				ResultSet result = stmt.executeQuery(sqlStatement);

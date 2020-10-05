@@ -4,7 +4,7 @@ import java.util.*;
 import javax.swing.JOptionPane;
 
 public class UserCompliments{
-	public static void main(Connection conn, String user_id, boolean user_bool) {
+	public static void main(Connection conn, String user_name, String user_id, boolean user_bool) {
 		//Connection conn = null;
 		try {
 			String output = "";

@@ -3,7 +3,7 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 public class User{
-	public static void main(Connection conn, String user_id, boolean user_bool) {
+	public static void main(Connection conn, String user_name, String user_id, boolean user_bool) {
 		try{
             String output = "";
             String txtoption = "";

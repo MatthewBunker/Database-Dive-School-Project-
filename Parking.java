@@ -1,60 +1,188 @@
 import java.sql.*;
 import javax.swing.JOptionPane;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.*;
+import java.awt.event.*;
+import javax.swing.event.*;
 
 public class Parking{
-	public static void main(Connection conn, String business_name, boolean name_bool) {
+	public static void main(Connection conn, String business_name, String business_id, boolean name_bool) {
 		try {
+			JDialog parking_dialog = new JDialog();
+			JOptionPane optionPane;
 			//create a statement object
-			if (name_bool == true){
-				Statement stmt = conn.createStatement();
-				String sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
-				ResultSet result = stmt.executeQuery(sqlStatement);
+			if (name_bool == false){
 				String output = "";
-				while(result.next()) {
-					output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
+				if(business_name != ""){
+					Statement stmt = conn.createStatement();
+					String sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
+					ResultSet result = stmt.executeQuery(sqlStatement);
+					while(result.next()) {
+						output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
+					}
+				}else if (business_id != ""){
+					Statement stmt = conn.createStatement();
+					String sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"business_id\"=\'%s\'", business_id);
+					ResultSet result = stmt.executeQuery(sqlStatement);
+					while(result.next()) {
+						output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
+					}
 				}
-				// System.out.println(result.getString("address"));
-				JOptionPane.showMessageDialog(null, "Parking information for "+business_name + "\n" + output);
+				// JOptionPane.showMessageDialog(null, "Parking information for "+business_name + "\n" + output);
+				Object[] inputFields = {output};
+				optionPane = new JOptionPane(inputFields, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+				parking_dialog.setContentPane(optionPane);
+				parking_dialog.setTitle("Parking Info");
+				parking_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				parking_dialog.pack();
+				parking_dialog.setLocationRelativeTo(null);
+				parking_dialog.setVisible(true);
 			} else {
-				String option = JOptionPane.showInputDialog(null,"0: Close\n"
-										    + "1: Top 10 rating businesses search by city\n"
-											+ "2: Top 10 rating businesses search by state\n"
-											+ "3: Top 10 rating businesses search by postal code\n"
-											+ "Input desired command (enter \"1\" for Top 10 rating business search by city): ");
-				int optionInt = Integer.parseInt(option);
-				String option2 = null;
-				String input = "";
-				switch (optionInt) {
-					case 1:
-						option2 = "city";
-						input = JOptionPane.showInputDialog(null, "Enter city name: ");
-						break;
-					case 2:
-						option2 = "state";
-						input = JOptionPane.showInputDialog(null, "Enter state name: ");
-						break;
-					case 3:
-						option2 = "postal code";
-						input = JOptionPane.showInputDialog(null, "Enter postal code: ");
-						break;
-					default:
-						break;
-				}
-				Box checkbox = Box.createVerticalBox();
+				JDialog input_dialog = new JDialog();
+				JDialog checkbox_dialog = new JDialog();
+				JLabel input_title = new JLabel("Search for Businesses within: ");
+				JLabel ct_title = new JLabel("City Name: ");
+				JTextField ct_input = new JTextField();
+				JLabel st_title = new JLabel("State Abbreviation: ");
+				JTextField st_input = new JTextField();
+				JLabel pc_title = new JLabel("Postal Code: ");
+				JTextField pc_input = new JTextField();
+				JButton input_search = new JButton("Search");
+				Object[] inputFields = {input_title, ct_title, ct_input, st_title, st_input, pc_title, pc_input, input_search};
+				JOptionPane inputPane = new JOptionPane(inputFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+
+				ct_input.getDocument().addDocumentListener(new DocumentListener() {
+					@Override
+					public void insertUpdate(DocumentEvent de){
+					   event(de);
+					}
+				
+					@Override
+					public void removeUpdate(DocumentEvent de) {
+						event(de);
+					}
+				
+					@Override
+					public void changedUpdate(DocumentEvent de){
+						event(de);
+					}
+				
+					private void event(DocumentEvent de){
+						if(ct_input.getText().equals("")){
+							st_input.setEnabled(true);
+							pc_input.setEnabled(true);
+						} else {
+							st_input.setEnabled(false);
+							pc_input.setEnabled(false);
+						}
+					}
+				});
+				st_input.getDocument().addDocumentListener(new DocumentListener() {
+					@Override
+					public void insertUpdate(DocumentEvent de){
+					   event(de);
+					}
+				
+					@Override
+					public void removeUpdate(DocumentEvent de) {
+						event(de);
+					}
+				
+					@Override
+					public void changedUpdate(DocumentEvent de){
+						event(de);
+					}
+				
+					private void event(DocumentEvent de){
+						if(st_input.getText().equals("")){
+							ct_input.setEnabled(true);
+							pc_input.setEnabled(true);
+						} else {
+							ct_input.setEnabled(false);
+							pc_input.setEnabled(false);
+						}
+					}
+				});
+				pc_input.getDocument().addDocumentListener(new DocumentListener() {
+					@Override
+					public void insertUpdate(DocumentEvent de){
+					   event(de);
+					}
+				
+					@Override
+					public void removeUpdate(DocumentEvent de) {
+						event(de);
+					}
+				
+					@Override
+					public void changedUpdate(DocumentEvent de){
+						event(de);
+					}
+				
+					private void event(DocumentEvent de){
+						if(pc_input.getText().equals("")){
+							ct_input.setEnabled(true);
+							st_input.setEnabled(true);
+						} else {
+							ct_input.setEnabled(false);
+							st_input.setEnabled(false);
+						}
+					}
+				});
+				input_search.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(!ct_input.getText().isBlank() || !st_input.getText().isBlank() || !pc_input.getText().isBlank()){
+							input_dialog.dispose();
+							checkbox_dialog.setVisible(true);
+						}
+					}
+				});
+
+				input_dialog.setTitle("Parking Input");
+				input_dialog.setContentPane(inputPane);
+				input_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				input_dialog.pack();
+				input_dialog.setLocationRelativeTo(null);
+				input_dialog.setVisible(true);
+
 				JLabel title = new JLabel("Select the parking options");
 				JCheckBox check1 = new JCheckBox("Validate parking");
 				JCheckBox check2 = new JCheckBox("Valet parking");
 				JCheckBox check3 = new JCheckBox("Street parking");
 				JCheckBox check4 = new JCheckBox("Garage parking");
 				JCheckBox check5 = new JCheckBox("Lot parking");
-				checkbox.add(title);
-				checkbox.add(check1);
-				checkbox.add(check2);
-				checkbox.add(check3);
-				checkbox.add(check4);
-				checkbox.add(check5);
-				JOptionPane.showMessageDialog(null,checkbox);
+				JButton check_search = new JButton("Search");
+				check_search.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						checkbox_dialog.dispose();
+					}
+				});
+
+				Object[] checkbox = {title, check1, check2, check3, check4, check5, check_search};
+				JOptionPane checkPane = new JOptionPane(checkbox, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+				checkbox_dialog.setContentPane(checkPane);
+				checkbox_dialog.setTitle("Parking Input");
+				checkbox_dialog.setContentPane(checkPane);
+				checkbox_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				checkbox_dialog.pack();
+				checkbox_dialog.setLocationRelativeTo(null);
+
+				String area = "";
+				String area_name = "";
+				if(!ct_input.getText().isBlank()){
+					area = "city";
+					area_name = ct_input.getText();
+				}
+				if(!st_input.getText().isBlank()){
+					area = "state";
+					area_name = st_input.getText();
+				}
+				if(!pc_input.getText().isBlank()){
+					area = "postal code";
+					area_name = pc_input.getText();
+				}
+
 				String statement = "";
 				if(check1.isSelected()){
 					statement += " AND \"Parking\".\"Validated\" = 't'";
@@ -71,17 +199,32 @@ public class Parking{
 				if(check5.isSelected()){
 					statement += " AND \"Parking\".\"Lot\" = 't'";
 				}
-				Statement stmt = conn.createStatement();
-				String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM ((\"business\" INNER JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\") INNER JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\") WHERE \"Address\".\"%s\"=\'%s\'%s ORDER BY \"business\".\"rating\" DESC LIMIT 10", option2, input, statement);
-				ResultSet result = stmt.executeQuery(sqlStatement);
-				String output = "";
-				output += "Top 10 business in "+option2+" with selected parking option avaliable.\n";
-				while (result.next()){
-					output += result.getString("Name")+"\n";
-				}
-				JOptionPane.showMessageDialog(null, output);
 			}
 		} catch (Exception e) {
+			System.out.println("Error accessing Database.");
+		}
+	}
+
+	public void output_method(Connection conn, String area_name, String area, String statement){
+		try{
+			JDialog output_dialog = new JDialog();
+			Statement stmt = conn.createStatement();
+			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM ((\"business\" INNER JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\") INNER JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\") WHERE \"Address\".\"%s\"=\'%s\'%s ORDER BY \"business\".\"rating\" DESC LIMIT 10", area, area_name, statement);
+			ResultSet result = stmt.executeQuery(sqlStatement);
+			String output = "";
+			output += "Top 10 business in "+area_name+" with selected parking option avaliable.\n";
+			while (result.next()){
+				output += result.getString("Name")+"\n";
+			}
+			JOptionPane outputPane = new JOptionPane(output, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+			output_dialog.setContentPane(outputPane);
+			output_dialog.setTitle("Parking Info");
+			output_dialog.setContentPane(outputPane);
+			output_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			output_dialog.pack();
+			output_dialog.setLocationRelativeTo(null);
+			output_dialog.setVisible(true);
+		} catch (Exception e){
 			System.out.println("Error accessing Database.");
 		}
 	}
