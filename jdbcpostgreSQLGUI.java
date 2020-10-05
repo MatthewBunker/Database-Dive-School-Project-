@@ -38,7 +38,8 @@ public class jdbcpostgreSQLGUI {
 			JButton usercompliments_button = new JButton("User Compliment");
 			JButton tip_button = new JButton("Tip");
 			JButton user_button = new JButton("User");
-			JButton hours_button = new JButton("Hours");
+            JButton hours_button = new JButton("Hours");
+            JButton pop_search_button = new JButton("Popular search");
 	
 			business_button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -101,9 +102,16 @@ public class jdbcpostgreSQLGUI {
 					menu_dialog.dispose();
 					business_info(6, conn);
 				}
+            });
+            
+            pop_search_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					pop_search_button(conn);
+				}
 			});
 	
-			Object[] inputfield = {title, "\n",direction, business_button, address_button, parking_button, checkin_button, review_button, usercompliments_button, user_button, hours_button, tip_button};
+			Object[] inputfield = {title, "\n",direction, business_button, address_button, parking_button, checkin_button, review_button, usercompliments_button, user_button, hours_button, tip_button, pop_search_button};
 			final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 			menu_dialog.setTitle("Menu GUI");
 			menu_dialog.setContentPane(optionPane);
@@ -340,5 +348,214 @@ public class jdbcpostgreSQLGUI {
         user_dialog.pack();
         user_dialog.setLocationRelativeTo(null);
         user_dialog.setVisible(true);
+    }
+
+    public static void pop_search_button(Connection conn){
+        JDialog pop_search_dialog = new JDialog();
+        JLabel directions = new JLabel("Select one of the Queries below: ");
+        JButton shortest_chain_button = new JButton("Shortest Chain of patrons");
+        JButton user_review_button = new JButton("User Review");
+        JButton franchise_restaurant_button = new JButton("Franchise Restaurant");
+        JButton local_restaurant_button = new JButton("Local Restaurant");
+        JButton rated_business_button = new JButton("Highest Rated Business");
+
+        Object[] inputfield = {directions, "\n", shortest_chain_button, user_review_button, franchise_restaurant_button, local_restaurant_button, rated_business_button};
+
+        final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        pop_search_dialog.setTitle("Popular Search Options");
+        pop_search_dialog.setContentPane(optionPane);
+        pop_search_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        pop_search_dialog.pack();
+        pop_search_dialog.setLocationRelativeTo(null);
+        pop_search_dialog.setVisible(true);
+
+        shortest_chain_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                pop_search_dialog.dispose();
+                shortest_chain_info(conn);
+            }
+        });
+
+        user_review_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                pop_search_dialog.dispose();
+                user_review_info(conn);
+            }
+        });
+
+        franchise_restaurant_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                pop_search_dialog.dispose();
+                franchise_restaurant_info(conn);
+            }
+        });
+
+        local_restaurant_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                pop_search_dialog.dispose();
+                local_restaurant_info(conn);
+            }
+        });
+
+        rated_business_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                pop_search_dialog.dispose();
+                rated_business_info(conn);
+            }
+        });
+    }
+
+    public static void shortest_chain_info (Connection conn){
+        JDialog shortest_chain_dialog = new JDialog();
+        JLabel title = new JLabel("Given 2 restaurants, we will return the shortest chain of patrons that gave a review of 3 stars or better\n");
+        JLabel directions = new JLabel("Fill in both boxes with a business name\n");
+        JLabel business_name_1 = new JLabel("Business 1: ");
+        JLabel business_name_2 = new JLabel("Business 2: ");
+        JTextField business_1 = new JTextField();
+        JTextField business_2 = new JTextField();
+        JButton submit = new JButton("Submit");
+
+        Object[] inputfield = {title, directions, business_name_1, business_1, business_name_2, business_2, submit};
+        final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        shortest_chain_dialog.setTitle("Shortest Chain");
+        shortest_chain_dialog.setContentPane(optionPane);
+        shortest_chain_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        shortest_chain_dialog.pack();
+        shortest_chain_dialog.setLocationRelativeTo(null);
+        shortest_chain_dialog.setVisible(true);
+
+        submit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                event(e);
+            }
+
+            private void event(ActionEvent e){
+                if(!business_1.getText().trim().equals("") && !business_2.getText().trim().equals("")){
+                    Business.shortest_chain_main(conn, business_1.getText().trim(), business_2.getText().trim());
+                }
+            }
+        });
+    }
+
+    public static void user_review_info (Connection conn){
+        JDialog user_review_dialog = new JDialog();
+        JLabel title = new JLabel("Given a user, summarize average star ratings and comments made by user, and then summarize\n the Yelp react statistics on their reviews from other users\n");
+        JLabel directions = new JLabel("Fill in the box with a user name\n");
+        JLabel user_name = new JLabel("User Name: ");
+        JTextField user = new JTextField();
+        JButton submit = new JButton("Submit");
+
+        Object[] inputfield = {title, directions, user_name, user, submit};
+        final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        user_review_dialog.setTitle("User Review Statistics");
+        user_review_dialog.setContentPane(optionPane);
+        user_review_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        user_review_dialog.pack();
+        user_review_dialog.setLocationRelativeTo(null);
+        user_review_dialog.setVisible(true);
+
+        submit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                event(e);
+            }
+
+            private void event(ActionEvent e){
+                if(!user.getText().trim().equals("")){
+                    User.user_review_main(conn, user.getText().trim());
+                }
+            }
+        });
+    }
+
+    public static void franchise_restaurant_info (Connection conn){
+        JDialog franchise_restaurant_dialog = new JDialog();
+        JLabel title = new JLabel("Given a US state, find the 5 restaurant franchises that have an average rating of 3.5 with the furthest location spread\n");
+        JLabel directions = new JLabel("Fill in the box with a State\n");
+        JLabel state_name = new JLabel("State: ");
+        JTextField state = new JTextField();
+        JButton submit = new JButton("Submit");
+
+        Object[] inputfield = {title, directions, state_name, state, submit};
+        final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        franchise_restaurant_dialog.setTitle("Franchise Restaurant rating");
+        franchise_restaurant_dialog.setContentPane(optionPane);
+        franchise_restaurant_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        franchise_restaurant_dialog.pack();
+        franchise_restaurant_dialog.setLocationRelativeTo(null);
+        franchise_restaurant_dialog.setVisible(true);
+
+        submit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                event(e);
+            }
+
+            private void event(ActionEvent e){
+                if(!state.getText().trim().equals("")){
+                    Business.franchise_restaurant_main(conn, state.getText().trim());
+                }
+            }
+        });
+    }
+
+    public static void local_restaurant_info (Connection conn){
+        JDialog local_restaurant_dialog = new JDialog();
+        JLabel title = new JLabel("Given a city, find the non-franchise restaurant that recieves the most tips\n");
+        JLabel directions = new JLabel("Fill in the box with a city\n");
+        JLabel city_name = new JLabel("State: ");
+        JTextField city = new JTextField();
+        JButton submit = new JButton("Submit");
+
+        Object[] inputfield = {title, directions, city_name, city, submit};
+        final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        local_restaurant_dialog.setTitle("Best Local Restaurant");
+        local_restaurant_dialog.setContentPane(optionPane);
+        local_restaurant_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        local_restaurant_dialog.pack();
+        local_restaurant_dialog.setLocationRelativeTo(null);
+        local_restaurant_dialog.setVisible(true);
+
+        submit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                event(e);
+            }
+
+            private void event(ActionEvent e){
+                if(!city.getText().trim().equals("")){
+                    Business.local_restaurant_main(conn, city.getText().trim());
+                }
+            }
+        });
+    }
+
+    public static void rated_business_info (Connection conn){
+        JDialog rated_business_dialog = new JDialog();
+        JLabel title = new JLabel("Given a category, and city, find the group of the 10 highest rated businesses within a 1 mile radius of each other\n");
+        JLabel directions = new JLabel("Fill in both boxes with a category and city name respectively\n");
+        JLabel category_name = new JLabel("Category: ");
+        JLabel city_name = new JLabel("City: ");
+        JTextField category = new JTextField();
+        JTextField city = new JTextField();
+        JButton submit = new JButton("Submit");
+
+        Object[] inputfield = {title, directions, category_name, category, city_name, city, submit};
+        final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        rated_business_dialog.setTitle("Highest Rated business");
+        rated_business_dialog.setContentPane(optionPane);
+        rated_business_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        rated_business_dialog.pack();
+        rated_business_dialog.setLocationRelativeTo(null);
+        rated_business_dialog.setVisible(true);
+
+        submit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                event(e);
+            }
+
+            private void event(ActionEvent e){
+                if(!category.getText().trim().equals("") && !city.getText().trim().equals("")){
+                    Business.rated_business_main(conn, category.getText().trim(), city.getText().trim());
+                }
+            }
+        });
     }
 }//end Class
