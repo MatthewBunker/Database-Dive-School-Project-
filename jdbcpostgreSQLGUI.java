@@ -1,8 +1,10 @@
 import java.sql.*;
-import javax.swing.JOptionPane;
-import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
+import javax.swing.*;
+import java.awt.event.*;
+import javax.swing.event.*;
+// import java.io.File;
+// import java.io.IOException;
+
 //import java.sql.DriverManager;
 /*
 CSCE 315
@@ -10,132 +12,333 @@ CSCE 315
  */
 
 public class jdbcpostgreSQLGUI {
-  public static void main(String args[]) {
-    //dbSetup hides my username and password
-    dbSetup my = new dbSetup();
-    //Building the connection
-	  Connection conn = null;
-      try {
-        Class.forName("org.postgresql.Driver");
-        conn = DriverManager.getConnection(
-          "jdbc:postgresql://csce-315-db.engr.tamu.edu/db911_group11_theintroverts",
-           my.user, my.pswd);
-     } catch (Exception e) {
-        e.printStackTrace();
-        System.err.println(e.getClass().getName()+": "+e.getMessage());
-        System.exit(0);
-     }//end try catch
-	 JOptionPane.showMessageDialog(null,"Opened database successfully");
-     String cus_lname = "";
-     try{
-		boolean initPass = true;
-		while(initPass) {
-		//Printing options for Users, changeable based on design
-		   String option = JOptionPane.showInputDialog(null,"0: Close\n"
-										    + "1: Checkin\n"
-											+ "2: Address\n"
-											+ "3: Parking\n"
-											+ "4: Business\n"
-											+ "5: Review (WIP)\n"
-											+ "6: User Compliments\n"
-											+ "7: Tip (WIP)\n"
-											+ "8: User\n"
-											+ "9: Hours\n"
-											+ "Input desired command (enter \"1\" for checkin): ");
-			int textOpt = JOptionPane.showConfirmDialog(null, "Print to a txt file?");
-			int optionInt = Integer.parseInt(option);
-			String business_name = "";
-			boolean name_bool = false;
-			String user_id = "";
-			boolean user_bool = false;
-			if(optionInt != 1 && optionInt != 6 && optionInt != 8 && optionInt != 0){
-				business_name = JOptionPane.showInputDialog(null, "Enter desired business id or enter N/A\n"
-																+ "Examples: \"Felinus\" or \"Burger King\"");
-				
-				if(business_name.equals("N/A")){
-					name_bool = false;
-				}
-				else{
-					name_bool = true;
-				}
-			}
-			else if(optionInt == 6 || optionInt == 8 && optionInt != 0){
-				user_id = JOptionPane.showInputDialog(null, "Enter desired user ID or enter N/A\n"
-														  + "Examples: \"--2vR0DIsmQ6WfcSzKWigw\"");
-				if(user_id.equals("N/A")){
-					user_bool = false;
-				}
-				else{
-					user_bool = true;
-				}
-			}
+  	public static void main(String args[]) {
+    	//Building the connection
+	  	Connection temp = null;
+      	try {
+        	Class.forName("org.postgresql.Driver");
+        	temp = DriverManager.getConnection(
+    		"jdbc:postgresql://csce-315-db.engr.tamu.edu/db911_group11_theintroverts",
+           	dbSetup.user, dbSetup.pswd);
+     	} catch (Exception e) {
+        	e.printStackTrace();
+        	System.err.println(e.getClass().getName()+": "+e.getMessage());
+        	System.exit(0);
+		}//end try catch
+		final Connection conn = temp;
+     	try{
+			final JDialog menu_dialog = new JDialog();
+			JLabel title = new JLabel("Welcome to \"The Introverts\" GUI");
+			JLabel direction = new JLabel("Select an option: ");
+			JButton business_button = new JButton("Business");
+			JButton address_button = new JButton("Address");
+			JButton parking_button = new JButton("Parking");
+			JButton checkin_button = new JButton("Check-in");
+			JButton review_button = new JButton("Review");
+			JButton usercompliments_button = new JButton("User Compliment");
+			JButton tip_button = new JButton("Tip");
+			JButton user_button = new JButton("User");
+			JButton hours_button = new JButton("Hours");
 	
-			switch(optionInt) {
-				case 0:
-					JOptionPane.showMessageDialog(null,"Close selected");
-					initPass = false;
-					break;
-				case 1:
-					JOptionPane.showMessageDialog(null,"Checkin selected");
-					initPass = false;
-					CheckIn.main(conn);
-					break;
-				case 2:
-					JOptionPane.showMessageDialog(null,"Address selected");
-					initPass = false;
-					Address.main(conn, business_name, name_bool);
-					break;
-				case 3:
-					JOptionPane.showMessageDialog(null,"Parking selected");
-					initPass = false;
-					Parking.main(conn, business_name, name_bool);
-					break;
-				case 4:
-					JOptionPane.showMessageDialog(null,"Business selected");
-					initPass = false;
-					Business.main(conn, business_name, name_bool);
-					break;
-				case 5:
-					JOptionPane.showMessageDialog(null,"Review selected");
-					initPass = false;
-					Review.main(conn, business_name, name_bool);
-					break;
-				case 6:
-					JOptionPane.showMessageDialog(null,"User Compliments selected");
-					initPass = false;
-					UserCompliments.main(conn, user_id, user_bool);
-					break;
-				case 7:
-					JOptionPane.showMessageDialog(null,"Tip selected");
-					initPass = false;
-					Tip.main(conn, business_name, name_bool);
-					break;
-				case 8:
-					JOptionPane.showMessageDialog(null,"User selected");
-					initPass = false;
-					User.main(conn, user_id, user_bool);
-					break;
-				case 9:
-					JOptionPane.showMessageDialog(null,"Hours selected");
-					initPass = false;
-					Hours.main(conn, business_name, name_bool);
-					break;
-				 default:
-					JOptionPane.showMessageDialog(null,"Invalid argument");
-					initPass = false;
-					break;
-			}
-		}
-		
-   } catch (Exception e){
-	 JOptionPane.showMessageDialog(null,"Error accessing Database.");
-   }
-    //closing the connection
-    try {
-      conn.close();
-	  JOptionPane.showMessageDialog(null,"Connection Closed.");
-    } catch(Exception e) {
-	  JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
-    }//end try catch
-  }//end main
+			business_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(0, conn);
+				}
+			});
+	
+			address_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(1, conn);
+				}
+			});
+	
+			parking_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(2, conn);
+				}
+			});
+	
+			checkin_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(3, conn);
+				}
+			});
+	
+			review_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(4, conn);
+				}
+			});
+	
+			usercompliments_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					user_info(1, conn);
+				}
+			});
+	
+			user_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					user_info(2, conn);
+				}
+			});
+	
+			tip_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(5, conn);
+				}
+			});
+	
+			hours_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					menu_dialog.dispose();
+					business_info(6, conn);
+				}
+			});
+	
+			Object[] inputfield = {title, "\n",direction, business_button, address_button, parking_button, checkin_button, review_button, usercompliments_button, user_button, hours_button, tip_button};
+			final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+			menu_dialog.setTitle("Menu GUI");
+			menu_dialog.setContentPane(optionPane);
+			menu_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			menu_dialog.pack();
+			menu_dialog.setLocationRelativeTo(null);
+			menu_dialog.setVisible(true);
+		} catch (Exception e){
+	 		JOptionPane.showMessageDialog(null,"Error accessing Database.");
+   		}
+    	// //closing the connection
+    	// try {
+		// 	conn.close();
+		// 	System.out.println("Connection Closed");
+	 	// 	// JOptionPane.showMessageDialog(null,"Connection Closed.");
+    	// } catch(Exception e) {
+		// 	System.out.println("Connection Not Closed");
+	  	// 	// JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
+    	// }//end try catch
+	}//end main
+	
+	public static void business_info(int entity, Connection conn){
+        JDialog business_dialog = new JDialog();
+        JTextField name = new JTextField();
+        JTextField id = new JTextField();
+        JCheckBox checkBox = new JCheckBox("Continue without Business Name or ID");
+        JButton searchButton = new JButton("Search");
+
+        name.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(name.getText().equals("")){
+                    id.setEnabled(true);
+                    checkBox.setEnabled(true);
+                } else {
+                    id.setEnabled(false);
+                    checkBox.setEnabled(false);
+                }
+            }
+        });
+
+        id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(id.getText().equals("")){
+                    name.setEnabled(true);
+                    checkBox.setEnabled(true);
+                } else {
+                    name.setEnabled(false);
+                    checkBox.setEnabled(false);
+                }
+            }
+        });
+
+        checkBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (checkBox.isSelected()) {
+                    name.setEnabled(false);
+                    id.setEnabled(false);
+                } else {
+                    name.setEnabled(true);
+                    id.setEnabled(true);
+                }
+            }
+        });
+
+        Object[] inputFields = {"Enter Business Name: ", name, "Enter Business ID: ", id, checkBox, searchButton};
+        
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+				if(!name.getText().isBlank() || !id.getText().isBlank() || checkBox.isSelected()){
+					business_dialog.dispose();
+					switch (entity){
+						case 0:
+							Business.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 1:
+							Address.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 2:
+							Parking.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 3:
+							CheckIn.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 4:
+							// Review.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 5:
+							Hours.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 6:
+							// Tip.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+					}
+				}
+            }
+        });
+
+        JOptionPane optionPane = new JOptionPane(inputFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        business_dialog.setContentPane(optionPane);
+        business_dialog.setTitle("Business Input");
+        business_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        business_dialog.pack();
+        business_dialog.setLocationRelativeTo(null);
+        business_dialog.setVisible(true);
+	}
+	
+	public static void user_info(int entity, Connection conn){
+        JDialog user_dialog = new JDialog();
+        JTextField name = new JTextField();
+        JTextField id = new JTextField();
+        JCheckBox checkBox = new JCheckBox("Continue without User Name or ID");
+        JButton searchButton = new JButton("Search");
+
+        name.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(name.getText().equals("")){
+                    id.setEnabled(true);
+                    checkBox.setEnabled(true);
+                } else {
+                    id.setEnabled(false);
+                    checkBox.setEnabled(false);
+                }
+            }
+        });
+
+        id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(id.getText().equals("")){
+                    name.setEnabled(true);
+                    checkBox.setEnabled(true);
+                } else {
+                    name.setEnabled(false);
+                    checkBox.setEnabled(false);
+                }
+            }
+        });
+
+        checkBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (checkBox.isSelected()) {
+                    name.setEnabled(false);
+                    id.setEnabled(false);
+                } else {
+                    name.setEnabled(true);
+                    id.setEnabled(true);
+                }
+            }
+        });
+
+        Object[] inputFields = {"Enter User Name: ", name, "Enter User ID: ", id, checkBox, searchButton};
+        
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+				if(!name.getText().isBlank() || !id.getText().isBlank() || checkBox.isSelected()){
+					user_dialog.dispose();
+					switch(entity){
+						case 0:
+							User.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+						case 1:
+							UserCompliments.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							break;
+					}
+				}
+            }
+        });
+
+        JOptionPane optionPane = new JOptionPane(inputFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        user_dialog.setContentPane(optionPane);
+        user_dialog.setTitle("User Input");
+        user_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        user_dialog.pack();
+        user_dialog.setLocationRelativeTo(null);
+        user_dialog.setVisible(true);
+    }
 }//end Class
