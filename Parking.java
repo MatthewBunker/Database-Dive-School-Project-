@@ -10,23 +10,18 @@ public class Parking{
 			JDialog parking_dialog = new JDialog();
 			JOptionPane optionPane;
 			if (name_bool == false){
-				String output = "";
-				if(business_name != ""){
-					Statement stmt = conn.createStatement();
-					String sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
-					ResultSet result = stmt.executeQuery(sqlStatement);
-					while(result.next()) {
-						output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
-					}
+				Statement stmt = conn.createStatement();
+				String sqlStatement = "";
+				if(!business_name.isBlank()){
+					sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
 				}
-				if (business_id != ""){
-					Statement stmt = conn.createStatement();
-					String sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"business_id\"=\'%s\'", business_id);
-					System.out.println(sqlStatement);
-					ResultSet result = stmt.executeQuery(sqlStatement);
-					while(result.next()) {
-						output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
-					}
+				if (!business_id.isBlank()){
+					sqlStatement = String.format("SELECT \"Street\", \"Garage\", \"Validated\", \"Lot\", \"Valet\" FROM \"business\" LEFT JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"business_id\"=\'%s\'", business_id);
+				}
+				ResultSet result = stmt.executeQuery(sqlStatement);
+				String output = "";
+				while(result.next()) {
+					output += "Validate Parking: "+result.getString("Validated")+"\n"+"Valet Parking: "+result.getString("Valet")+"\n"+"Street Parking: "+result.getString("Street")+"\n"+"Garage Parking: "+result.getString("Garage")+"\n"+"Lot Parking: "+result.getString("Lot")+"\n";
 				}
 				Object[] inputFields = {output};
 				optionPane = new JOptionPane(inputFields, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
@@ -36,6 +31,7 @@ public class Parking{
 				parking_dialog.pack();
 				parking_dialog.setLocationRelativeTo(null);
 				parking_dialog.setVisible(true);
+				jdbcpostgreSQLGUI.close_conn(conn);
 			} else {
 				JDialog input_dialog = new JDialog();
 				JDialog checkbox_dialog = new JDialog();
@@ -209,7 +205,7 @@ public class Parking{
 			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM ((\"business\" INNER JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\") INNER JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\") WHERE \"Address\".\"%s\"=\'%s\'%s ORDER BY \"business\".\"rating\" DESC LIMIT 10", area, area_name, statement);
 			ResultSet result = stmt.executeQuery(sqlStatement);
 			String output = "";
-			output += "Top 10 business in "+area_name+" with selected parking option avaliable.\n";
+			output += "Top 10 businesses in "+area_name+" with selected parking option avaliable.\n";
 			while (result.next()){
 				output += result.getString("Name")+"\n";
 			}
@@ -221,6 +217,7 @@ public class Parking{
 			output_dialog.pack();
 			output_dialog.setLocationRelativeTo(null);
 			output_dialog.setVisible(true);
+			jdbcpostgreSQLGUI.close_conn(conn);
 		} catch (Exception e){
 			System.out.println("Error accessing Database.");
 		}

@@ -1,29 +1,38 @@
 import java.sql.*;
-import java.util.Scanner;
-import java.text.SimpleDateFormat;  
-import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.*;
 
-//display parking record(s) of corresponding business(es)
 public class CheckIn{
 	public static void main(Connection conn, String business_name, String business_id, boolean name_bool) {
 		try {
-			String output = "";
-			JOptionPane.showInputDialog(null,"Welcome! Press any key to continue.");
-
-			// SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			
-			Statement stmt = conn.createStatement();
-			String sqlStatement = String.format("SELECT * FROM \"Checkin\" LIMIT 10"); // SELECT * FROM "Checkin" LIMIT 10;
-			ResultSet result = stmt.executeQuery(sqlStatement);	
-
-			output += "Business_ID          | Date\n";
-
-			while (result.next()){
-				output += result.getString("Business_ID") + " | " + result.getString("Date") + "\n"; 
+			if (name_bool == false){
+				Statement stmt = conn.createStatement();
+				String sqlStatement = "";
+				JLabel title = new JLabel();
+				if(!business_name.isBlank()){
+					title.setText("Check-in Info for business "+business_name);
+					sqlStatement = String.format("SELECT \"Checkin\".\"Date\" FROM \"business\" LEFT JOIN \"Checkin\" ON \"Checkin\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
+				}
+				if(!business_id.isBlank()){
+					title.setText("Check-in Info for business "+business_id);
+					sqlStatement = String.format("SELECT \"Checkin\".\"Date\" FROM \"business\" LEFT JOIN \"Checkin\" ON \"Checkin\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"business\".\"business_id\"=\'%s\'", business_id);
+				}
+				ResultSet result = stmt.executeQuery(sqlStatement);
+				String[] arr = {};
+				while(result.next()) {
+					arr = result.getString("Date").split(", ", 0);
+				}
+				JList text = new JList<String>(arr);
+				JScrollPane scrollPane = new JScrollPane(text);
+				Box content = Box.createVerticalBox();
+				content.add(title);
+				content.add(scrollPane);
+				JOptionPane.showMessageDialog(null, content, "Check-in Info", JOptionPane.INFORMATION_MESSAGE);
+				jdbcpostgreSQLGUI.close_conn(conn);
+			} else {
+				JOptionPane.showMessageDialog(null, "Please Enter Business Name or ID!", "Check-in Info", JOptionPane.INFORMATION_MESSAGE);
+				jdbcpostgreSQLGUI.close_conn(conn);
 			}
-
-			JOptionPane.showMessageDialog(null, output);
 		} 
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Error accessing Database.");
