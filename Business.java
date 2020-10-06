@@ -1,6 +1,9 @@
 import java.sql.*;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
+import java.util.HashMap;
+import java.util.Vector;
+import java.util.Set;
 
 public class Business{
 	public static void main(Connection conn, String business_name, String business_id, boolean name_bool) {
@@ -196,10 +199,53 @@ public class Business{
 	}
 
 	public static void franchise_restaurant_main(Connection conn, String state){
-		//h
+		try{
+			HashMap<String, Integer> business = new HashMap<String, Integer>();
+			Vector <String> business_vec = new Vector<String>();
+			Vector <String> franchises = new Vector<String>();
+			String output = "";
+			Statement stmt = conn.createStatement();
+			String sqlStatement = String.format("SELECT * FROM \"business\" FULL JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"Address\".\"state\"= \'" + state + "\' AND \"business\".\"rating\" >= 3.5");
+			System.out.println(sqlStatement);
+			ResultSet result = stmt.executeQuery(sqlStatement);
+
+			while(result.next()){
+				String temp = result.getString("Name");
+				business_vec.add(temp);
+			}
+
+
+			for(String name : business_vec){
+				Integer count = business.get(name);
+				if(count == null){
+					business.put(name, 1);
+				}
+				else{
+					//System.out.println("here");
+					business.put(name, ++count);
+				}
+			}
+
+			for(String name : business.keySet()){
+				Integer count = business.get(name);
+				if(count > 1){
+					franchises.add(name);
+				}
+			}
+
+			for(int i = 0; i < franchises.size(); i++){
+				//sqlstatement = String.format("dfd");
+			}
+
+			//JOptionPane.showMessageDialog(null, output);
+		}
+		catch(Exception e){
+			JOptionPane.showMessageDialog(null,"Error accessing Database.");
+		}
+		
 	}
 
-	public static void local_restaurant_main(Connection conn, String state){
+	public static void local_restaurant_main(Connection conn, String city){
 		//h
 	}
 

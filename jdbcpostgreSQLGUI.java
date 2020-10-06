@@ -431,6 +431,7 @@ public class jdbcpostgreSQLGUI {
 
             private void event(ActionEvent e){
                 if(!business_1.getText().trim().equals("") && !business_2.getText().trim().equals("")){
+                    shortest_chain_dialog.dispose();
                     Business.shortest_chain_main(conn, business_1.getText().trim(), business_2.getText().trim());
                 }
             }
@@ -461,6 +462,7 @@ public class jdbcpostgreSQLGUI {
 
             private void event(ActionEvent e){
                 if(!user.getText().trim().equals("")){
+                    user_review_dialog.dispose();
                     User.user_review_main(conn, user.getText().trim());
                 }
             }
@@ -491,6 +493,7 @@ public class jdbcpostgreSQLGUI {
 
             private void event(ActionEvent e){
                 if(!state.getText().trim().equals("")){
+                    franchise_restaurant_dialog.dispose();
                     Business.franchise_restaurant_main(conn, state.getText().trim());
                 }
             }
@@ -521,6 +524,7 @@ public class jdbcpostgreSQLGUI {
 
             private void event(ActionEvent e){
                 if(!city.getText().trim().equals("")){
+                    local_restaurant_dialog.dispose();
                     Business.local_restaurant_main(conn, city.getText().trim());
                 }
             }
@@ -553,6 +557,7 @@ public class jdbcpostgreSQLGUI {
 
             private void event(ActionEvent e){
                 if(!category.getText().trim().equals("") && !city.getText().trim().equals("")){
+                    rated_business_dialog.dispose();
                     Business.rated_business_main(conn, category.getText().trim(), city.getText().trim());
                 }
             }
