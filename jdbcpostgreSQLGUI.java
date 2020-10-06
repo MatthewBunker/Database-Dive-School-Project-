@@ -563,4 +563,12 @@ public class jdbcpostgreSQLGUI {
             }
         });
     }
+    
+	public static void close_conn(Connection conn) {
+		try {
+			conn.close();
+		} catch (Exception ex) {
+			System.out.println("Error closing Database.");
+		}
+	}
 }//end Class
