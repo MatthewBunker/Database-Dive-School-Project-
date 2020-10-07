@@ -11,9 +11,34 @@ import java.lang.*;
 
 public class Business{
 	public static void main(Connection conn, String business_name, String business_id, boolean name_bool) {
-	
+		try{
+			if(name_bool == false){
+				Statement stmt = conn.createStatement();
+				String sqlStatement = "";
+				if(!business_name.isBlank()){
+					sqlStatement = String.format("SELECT * FROM \"business\" WHERE \"business\".\"Name\"=\'%s\'", business_name);
+				}
+				if (!business_id.isBlank()){
+					sqlStatement = String.format("SELECT * FROM \"business\" WHERE \"business_id\"=\'%s\'", business_id);
+				}
+				ResultSet result = stmt.executeQuery(sqlStatement);
+				String output = "";
+				while(result.next()) {
+					output += "Business Name: "+result.getString("Name")+"\n";
+					output += "Business ID: "+result.getString("business_id")+"\n";
+					output += "Category: "+result.getString("category")+"\n";
+					output += "Rating: "+result.getString("rating")+"\n";
+				}
+				JOptionPane.showMessageDialog(null, output, "Business Info", JOptionPane.INFORMATION_MESSAGE);
+				jdbcpostgreSQLGUI.close_conn(conn);
+			} else {
+				JOptionPane.showMessageDialog(null, "Please Enter Business Name or ID!", "Check-in Info", JOptionPane.INFORMATION_MESSAGE);
+				jdbcpostgreSQLGUI.close_conn(conn);
+			}
+		} catch (Exception e){
+			System.out.println("Error accessing Database.");
+		}
 	}
-
 
 	public static void shortest_chain_main(Connection conn, String business_1, String business_2){
 		//h
@@ -140,7 +165,6 @@ public class Business{
 			Vector <String> business_vec = new Vector<String>();
 			Vector <String> business_id = new Vector<String>();
 			Vector <String> local = new Vector<String>();
-			String output = "";
 			Statement stmt = conn.createStatement();
 			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM \"business\" FULL JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"Address\".\"city\"= \'" + city + "\'");
 			ResultSet result = stmt.executeQuery(sqlStatement);

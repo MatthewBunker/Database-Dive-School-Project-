@@ -1,97 +1,87 @@
 import java.sql.*;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.event.*;
 
 public class User{
-	public static void main(Connection conn, String user_name, String user_id, boolean user_bool) {
+	public static void main(Connection conn, String user_id, boolean user_bool) {
 		try{
-            String output = "";
-            String txtoption = "";
-			Scanner input = new Scanner(System.in);
-			if(user_bool == true){
-                txtoption = JOptionPane.showInputDialog(null, "1: Name of User with ID: " + user_id);
-				//System.out.println("1: Name of User with ID: " + user_id);
-			}
-			else{
-                txtoption = JOptionPane.showInputDialog(null, "1: First 10 User ID's \n" 
-															+ "2: First 10 User Names");
-                //System.out.println("1: First 10 User ID's");
-                //System.out.println("2: First 10 User Names");
-			}
-			int option = Integer.parseInt(txtoption);
-
-			//create a statement object
-			Statement stmt = conn.createStatement();
-
-			if(user_bool == true){
-				String sqlStatement = "SELECT * FROM \"User\" WHERE \"User_ID\"=\'" + user_id + "\'";
-				ResultSet result = stmt.executeQuery(sqlStatement);	
-
-				switch(option){
-                    case 1:
-                        output += "User ID                | User Name\n" +
-						"_______________________________\n";
-						//System.out.println("User ID                | User Name");
-						//System.out.println("_______________________________");
-
-						while(result.next()){
-                            output += result.getString("USER_ID") + " | " + result.getString("Name") + "\n";
-							/*System.out.print(result.getString("USER_ID"));
-							System.out.print(" | ");
-                            System.out.println(result.getString("Name"));
-                            */
-                        }
-                        JOptionPane.showMessageDialog(null, output);
-						break;
-                    default:
-                        JOptionPane.showMessageDialog(null, "Invalid Argument: Closing");
-						//System.out.println("Invalid Argument: Closing");
-						break;
-				}
-			}
-			else{
-				String sqlStatement = "SELECT * FROM \"User\" LIMIT 10";
+			if (user_bool == false){
+				Statement stmt = conn.createStatement();
+				String sqlStatement = String.format("SELECT * FROM \"User\" LEFT JOIN \"User Compliments\" ON \"User\".\"User_ID\"=\"User Compliments\".\"User_ID\" WHERE \"User\".\"User_ID\"=\'%s\'", user_id);
 				ResultSet result = stmt.executeQuery(sqlStatement);
-
-				switch(option){
-                    case 1:
-                        output += "User ID\n" +
-						"_______________________________\n";
-						//System.out.println("User ID");
-						//System.out.println("_______________________________");
-
-						while(result.next()){
-                            output += result.getString("User_ID") + "\n";
-							//System.out.println(result.getString("User_ID"));
-                        }
-                        JOptionPane.showMessageDialog(null, output);
-						break;
-                    case 2:
-                        output += "User Name\n" +
-						"_______________________________\n";
-						//System.out.println("User Name");
-						//System.out.println("_______________________________");
-
-						while(result.next()){
-                            output += result.getString("Name") + "\n";
-							//System.out.println(result.getString("Name"));
-                        }
-                        JOptionPane.showMessageDialog(null, output);
-						break;
-                    default:
-                        JOptionPane.showMessageDialog(null, "Invalid Argument: Closing");
-						//System.out.println("Invalid Argument: Closing");
-						break;
+				String output = "";
+				while(result.next()) {
+					output += "User ID: "+user_id+"\n"+"User Name: "+result.getString("Name")+"\n"+"Useful comliments received: "+result.getString("Useful")+"\n"+"Funny compliments received: "+result.getString("Funny")+"\n"+"Cool compliments received: "+result.getString("Cool")+"\n";
 				}
-			}				
+				Object[] inputFields = {output};
+				JDialog user_dialog = new JDialog();
+				JOptionPane optionPane;
+				optionPane = new JOptionPane(inputFields, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+				user_dialog.setContentPane(optionPane);
+				user_dialog.setTitle("User Info");
+				user_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				user_dialog.pack();
+				user_dialog.setLocationRelativeTo(null);
+				user_dialog.setVisible(true);
+				jdbcpostgreSQLGUI.close_conn(conn);
+			} else {
+				JDialog search_dialog = new JDialog();
+				JLabel title = new JLabel("Search for User by Name: ");
+				JTextField name = new JTextField();
+				JButton search_btn = new JButton("Search");
+				Object[] searchFields = {title, name, search_btn};
+				
+				search_btn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(!name.getText().isBlank()){
+							search_dialog.dispose();
+							output_method(conn, name.getText());
+						}
+					}
+				});
+
+				JOptionPane searchPane = new JOptionPane(searchFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+				search_dialog.setContentPane(searchPane);
+				search_dialog.setTitle("User Search");
+				search_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				search_dialog.pack();
+				search_dialog.setLocationRelativeTo(null);
+				search_dialog.setVisible(true);
+			}		
 		}
 		catch(Exception e){
-            JOptionPane.showMessageDialog(null,"Error accessing Database.");
-			//System.out.println("Error accessing Database.");
+			System.out.println("Error accessing Database.");
 		}
 	}
 
-	public static void user_review_main(Connection conn, String user_name){
-		//h
+	public static void output_method(Connection conn, String name){
+		try{
+			JDialog output_dialog = new JDialog();
+			Statement stmt = conn.createStatement();
+			String sqlStatement = String.format("SELECT * FROM \"User\" WHERE \"Name\"=\'%s\'", name);
+			ResultSet result = stmt.executeQuery(sqlStatement);
+			String output = "";
+			output += "Users with Name: "+name+"\n";
+			output += "   Name    |                 User_ID                  \n";
+			while (result.next()){
+				output += result.getString("Name")+" | "+result.getString("User_ID")+"\n";
+			}
+			JOptionPane outputPane = new JOptionPane(output, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+			output_dialog.setContentPane(outputPane);
+			output_dialog.setTitle("User Info");
+			output_dialog.setContentPane(outputPane);
+			output_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			output_dialog.pack();
+			output_dialog.setLocationRelativeTo(null);
+			output_dialog.setVisible(true);
+			jdbcpostgreSQLGUI.close_conn(conn);
+		} catch (Exception e){
+			System.out.println("Error accessing Database.");
+		}
+	}
+
+	public static void user_review_main(Connection conn, String str){
+		
 	}
 }
