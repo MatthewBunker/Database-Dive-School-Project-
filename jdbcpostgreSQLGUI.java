@@ -504,7 +504,7 @@ public class jdbcpostgreSQLGUI {
         JDialog local_restaurant_dialog = new JDialog();
         JLabel title = new JLabel("Given a city, find the non-franchise restaurant that recieves the most tips\n");
         JLabel directions = new JLabel("Fill in the box with a city\n");
-        JLabel city_name = new JLabel("State: ");
+        JLabel city_name = new JLabel("City: ");
         JTextField city = new JTextField();
         JButton submit = new JButton("Submit");
 
