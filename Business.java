@@ -1,13 +1,9 @@
 import java.sql.*;
-import java.util.Scanner;
-import javax.swing.JOptionPane;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Collections;
-import java.util.Set;
-import java.awt.*;
-import java.util.ArrayList;
-import java.lang.*;
+import javax.swing.*;
+import java.awt.event.*;
 
 public class Business{
 	public static void main(Connection conn, String business_name, String business_id, boolean name_bool) {
@@ -32,10 +28,53 @@ public class Business{
 				JOptionPane.showMessageDialog(null, output, "Business Info", JOptionPane.INFORMATION_MESSAGE);
 				jdbcpostgreSQLGUI.close_conn(conn);
 			} else {
-				JOptionPane.showMessageDialog(null, "Please Enter Business Name or ID!", "Check-in Info", JOptionPane.INFORMATION_MESSAGE);
-				jdbcpostgreSQLGUI.close_conn(conn);
+				JDialog input_dialog = new JDialog();
+				JTextField input = new JTextField();
+				JButton search_btn = new JButton("Search");
+				Object[] inputFields = {"Enter the Category of the Business: ", "Ex: Auto Repair",input, search_btn};
+
+				search_btn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(!input.getText().isBlank()){
+							input_dialog.dispose();
+							output_method(conn, input.getText());
+						}
+					}
+				});
+
+				JOptionPane inputPane = new JOptionPane(inputFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+				input_dialog.setTitle("Business Category Search");
+				input_dialog.setContentPane(inputPane);
+				input_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				input_dialog.pack();
+				input_dialog.setLocationRelativeTo(null);
+				input_dialog.setVisible(true);
 			}
 		} catch (Exception e){
+			System.out.println("Error accessing Database.");
+		}
+	}
+
+	public static void output_method(Connection conn, String category){
+		try {
+			Statement stmt = conn.createStatement();
+			String sqlStatement = String.format("SELECT \"business_id\", \"Name\", \"rating\" FROM \"business\" WHERE \"category\" LIKE \'%s%s%s\'", "%",category, "%");
+			ResultSet result = stmt.executeQuery(sqlStatement);
+			Vector<String> arr = new Vector<String>();
+			while(result.next()) {
+				arr.add(result.getString("business_id")+" | "+result.getString("Name")+" | "+result.getString("rating"));
+			}
+			JList list = new JList<String>(arr);
+			JLabel title = new JLabel("Businesses with "+category+" category");
+			JLabel column = new JLabel("       Business ID        |     Name     |  Rating    ");
+			JScrollPane scrollPane = new JScrollPane(list);
+			Box content = Box.createVerticalBox();
+			content.add(title);
+			content.add(column);
+			content.add(scrollPane);
+			JOptionPane.showMessageDialog(null, content, "Business Info", JOptionPane.INFORMATION_MESSAGE);
+			jdbcpostgreSQLGUI.close_conn(conn);
+		} catch (Exception e) {
 			System.out.println("Error accessing Database.");
 		}
 	}
