@@ -643,9 +643,11 @@ public class jdbcpostgreSQLGUI {
         JLabel directions = new JLabel("Fill in the box with a city\n");
         JLabel city_name = new JLabel("City: ");
         JTextField city = new JTextField();
+        JLabel state_name = new JLabel("State: ");
+        JTextField state = new JTextField();
         JButton submit = new JButton("Submit");
 
-        Object[] inputfield = {title, directions, city_name, city, submit};
+        Object[] inputfield = {title, directions, city_name, city, state_name, state, submit};
         final JOptionPane optionPane = new JOptionPane(inputfield, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
         local_restaurant_dialog.setTitle("Best Local Restaurant");
         local_restaurant_dialog.setContentPane(optionPane);
@@ -660,9 +662,9 @@ public class jdbcpostgreSQLGUI {
             }
 
             private void event(ActionEvent e){
-                if(!city.getText().trim().equals("")){
+                if(!city.getText().trim().equals("") && !state.getText().trim().equals("")){
                     local_restaurant_dialog.dispose();
-                    Business.local_restaurant_main(conn, city.getText().trim());
+                    Business.local_restaurant_main(conn, city.getText().trim(), state.getText().trim());
                 }
             }
         });
