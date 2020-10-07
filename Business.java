@@ -41,7 +41,24 @@ public class Business{
 	}
 
 	public static void shortest_chain_main(Connection conn, String business_1, String business_2){
-		//h
+		try{
+			Statement stmt = conn.createStatement();
+			String sqlStatement = String.format("SELECT \"User_ID\", \"Review_ID\" FROM \"reviewstars\" WHERE \"business_id\"= business_id_1");
+			/*
+			SELECT "Name"."User"
+			FROM "Review"
+			INNER JOIN "User" ON "User"."User_ID"="Review"."User_ID"
+			INNER JOIN "reviewstars" ON "reviewstars"."review_id"="Review"."Review_ID"
+			WHERE "reviewstars"."stars" >= 3 and "Review"."Business_ID" = business_id_1 and "Review"."Business_ID"= business_id_2;
+			*/
+			
+			ResultSet result = stmt.executeQuery(sqlStatement);
+
+		}
+		catch(Exception e){
+			JOptionPane.showMessageDialog(null,"Error accessing Database.");
+		}
+
 	}
 
 	public static void franchise_restaurant_main(Connection conn, String state){
@@ -165,6 +182,7 @@ public class Business{
 			Vector <String> business_vec = new Vector<String>();
 			Vector <String> business_id = new Vector<String>();
 			Vector <String> local = new Vector<String>();
+			String output = "";
 			Statement stmt = conn.createStatement();
 			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM \"business\" FULL JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"Address\".\"city\"= \'" + city + "\'");
 			ResultSet result = stmt.executeQuery(sqlStatement);
@@ -213,14 +231,15 @@ public class Business{
 			int tip_count = 0;
 			String best_local = "temp";
 			for(int i = 0; i < business_id.size(); i++){
-				sqlStatement = String.format("SELECT COUNT(\"tip\".\"Business_ID\"), \"tip\".\"Business_ID\"  FROM \"tip\" WHERE \"tip\".\"Business_ID\"= \'" + business_id.elementAt(i) + "\'");
+				String local_business_id = business_id.elementAt(i);
+				sqlStatement = String.format("SELECT COUNT(\"tip\".\"Business_ID\") FROM \"tip\" WHERE \"tip\".\"Business_ID\"= \'" + local_business_id + "\'");
 				System.out.println(sqlStatement);
 				result = stmt.executeQuery(sqlStatement);
 
 				tip_count = Integer.parseInt(result.getString("count"));
 				if(tip_count > Max_count){
 					Max_count = tip_count;
-					best_local = result.getString("Business_ID");
+					best_local = local_business_id;
 				}
 			}
 			System.out.println(best_local + " " + Max_count);
