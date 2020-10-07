@@ -205,7 +205,7 @@ public class Parking{
 			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM ((\"business\" INNER JOIN \"Parking\" ON \"Parking\".\"Business_ID\"=\"business\".\"business_id\") INNER JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\") WHERE \"Address\".\"%s\"=\'%s\'%s ORDER BY \"business\".\"rating\" DESC LIMIT 10", area, area_name, statement);
 			ResultSet result = stmt.executeQuery(sqlStatement);
 			String output = "";
-			output += "Top 10 businesses in "+area_name+" with selected parking option avaliable.\n";
+			output += "Top 10 Businesses in "+area_name+" with selected parking option avaliable\n";
 			while (result.next()){
 				output += result.getString("Name")+"\n";
 			}

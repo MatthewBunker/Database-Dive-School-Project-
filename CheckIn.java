@@ -37,5 +37,5 @@ public class CheckIn{
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Error accessing Database.");
 		} 
-	} // end of main
-} // end of CheckIn
+	}
+}
