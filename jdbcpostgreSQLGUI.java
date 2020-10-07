@@ -72,7 +72,7 @@ public class jdbcpostgreSQLGUI {
 			review_button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					menu_dialog.dispose();
-					business_info(4, conn);
+					review_info(conn);
 				}
 			});
 	
@@ -86,21 +86,21 @@ public class jdbcpostgreSQLGUI {
 			user_button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					menu_dialog.dispose();
-					user_info(2, conn);
+					user_info(0, conn);
 				}
 			});
 	
 			tip_button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					menu_dialog.dispose();
-					business_info(5, conn);
+					tip_info(conn);
 				}
 			});
 	
 			hours_button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					menu_dialog.dispose();
-					business_info(6, conn);
+					business_info(4, conn);
 				}
             });
             
@@ -122,16 +122,7 @@ public class jdbcpostgreSQLGUI {
 		} catch (Exception e){
 	 		JOptionPane.showMessageDialog(null,"Error accessing Database.");
    		}
-    	// //closing the connection
-    	// try {
-		// 	conn.close();
-		// 	System.out.println("Connection Closed");
-	 	// 	// JOptionPane.showMessageDialog(null,"Connection Closed.");
-    	// } catch(Exception e) {
-		// 	System.out.println("Connection Not Closed");
-	  	// 	// JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
-    	// }//end try catch
-	}//end main
+	}
 	
 	public static void business_info(int entity, Connection conn){
         JDialog business_dialog = new JDialog();
@@ -227,13 +218,7 @@ public class jdbcpostgreSQLGUI {
 							CheckIn.main(conn, name.getText(), id.getText(), checkBox.isSelected());
 							break;
 						case 4:
-							// Review.main(conn, name.getText(), id.getText(), checkBox.isSelected());
-							break;
-						case 5:
 							Hours.main(conn, name.getText(), id.getText(), checkBox.isSelected());
-							break;
-						case 6:
-							// Tip.main(conn, name.getText(), id.getText(), checkBox.isSelected());
 							break;
 					}
 				}
@@ -251,37 +236,9 @@ public class jdbcpostgreSQLGUI {
 	
 	public static void user_info(int entity, Connection conn){
         JDialog user_dialog = new JDialog();
-        JTextField name = new JTextField();
         JTextField id = new JTextField();
-        JCheckBox checkBox = new JCheckBox("Continue without User Name or ID");
+        JCheckBox checkBox = new JCheckBox("Continue without User ID");
         JButton searchButton = new JButton("Search");
-
-        name.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent de){
-               event(de);
-            }
-        
-            @Override
-            public void removeUpdate(DocumentEvent de) {
-                event(de);
-            }
-        
-            @Override
-            public void changedUpdate(DocumentEvent de){
-                event(de);
-            }
-        
-            private void event(DocumentEvent de){
-                if(name.getText().equals("")){
-                    id.setEnabled(true);
-                    checkBox.setEnabled(true);
-                } else {
-                    id.setEnabled(false);
-                    checkBox.setEnabled(false);
-                }
-            }
-        });
 
         id.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -301,10 +258,8 @@ public class jdbcpostgreSQLGUI {
         
             private void event(DocumentEvent de){
                 if(id.getText().equals("")){
-                    name.setEnabled(true);
                     checkBox.setEnabled(true);
                 } else {
-                    name.setEnabled(false);
                     checkBox.setEnabled(false);
                 }
             }
@@ -314,27 +269,25 @@ public class jdbcpostgreSQLGUI {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (checkBox.isSelected()) {
-                    name.setEnabled(false);
                     id.setEnabled(false);
                 } else {
-                    name.setEnabled(true);
                     id.setEnabled(true);
                 }
             }
         });
 
-        Object[] inputFields = {"Enter User Name: ", name, "Enter User ID: ", id, checkBox, searchButton};
+        Object[] inputFields = {"Enter User ID: ", id, checkBox, searchButton};
         
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-				if(!name.getText().isBlank() || !id.getText().isBlank() || checkBox.isSelected()){
+				if(!id.getText().isBlank() || checkBox.isSelected()){
 					user_dialog.dispose();
 					switch(entity){
 						case 0:
-							User.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							User.main(conn, id.getText(), checkBox.isSelected());
 							break;
 						case 1:
-							UserCompliments.main(conn, name.getText(), id.getText(), checkBox.isSelected());
+							UserCompliments.main(conn, id.getText(), checkBox.isSelected());
 							break;
 					}
 				}
@@ -348,6 +301,190 @@ public class jdbcpostgreSQLGUI {
         user_dialog.pack();
         user_dialog.setLocationRelativeTo(null);
         user_dialog.setVisible(true);
+    }
+
+    public static void tip_info(Connection conn){
+        JDialog tip_dialog = new JDialog();
+        JTextField user_id = new JTextField();
+        JTextField business_id = new JTextField();
+        JButton searchButton = new JButton("Search");
+
+        user_id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(user_id.getText().equals("")){
+                    business_id.setEnabled(true);
+                } else {
+                    business_id.setEnabled(false);
+                }
+            }
+        });
+
+        business_id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(business_id.getText().equals("")){
+                    user_id.setEnabled(true);
+                } else {
+                    user_id.setEnabled(false);
+                }
+            }
+        });
+
+        Object[] inputFields = {"Enter User ID: ", user_id, "Enter Business ID: ", business_id, searchButton};
+        
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+				if(!user_id.getText().isBlank() || !business_id.getText().isBlank()){
+					tip_dialog.dispose();
+					Tip.main(conn, user_id.getText(), business_id.getText());
+				}
+            }
+        });
+
+        JOptionPane optionPane = new JOptionPane(inputFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        tip_dialog.setContentPane(optionPane);
+        tip_dialog.setTitle("Business Input");
+        tip_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        tip_dialog.pack();
+        tip_dialog.setLocationRelativeTo(null);
+        tip_dialog.setVisible(true);
+    }
+
+    public static void review_info(Connection conn){
+        JDialog review_dialog = new JDialog();
+        JTextField user_id = new JTextField();
+        JTextField business_id = new JTextField();
+        JTextField review_id = new JTextField();
+        JButton searchButton = new JButton("Search");
+
+        user_id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(user_id.getText().equals("")){
+                    business_id.setEnabled(true);
+                    review_id.setEnabled(true);
+                } else {
+                    business_id.setEnabled(false);
+                    review_id.setEnabled(false);
+                }
+            }
+        });
+
+        business_id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(business_id.getText().equals("")){
+                    user_id.setEnabled(true);
+                    review_id.setEnabled(true);
+                } else {
+                    user_id.setEnabled(false);
+                    review_id.setEnabled(false);
+                }
+            }
+        });
+
+        review_id.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de){
+               event(de);
+            }
+        
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                event(de);
+            }
+        
+            @Override
+            public void changedUpdate(DocumentEvent de){
+                event(de);
+            }
+        
+            private void event(DocumentEvent de){
+                if(review_id.getText().equals("")){
+                    user_id.setEnabled(true);
+                    business_id.setEnabled(true);
+                } else {
+                    user_id.setEnabled(false);
+                    business_id.setEnabled(false);
+                }
+            }
+        });
+
+        Object[] inputFields = {"Enter User ID: ", user_id, "Enter Business ID: ", business_id, "Enter Review ID: ", review_id, searchButton};
+        
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+				if(!user_id.getText().isBlank() || !business_id.getText().isBlank() ||!review_id.getText().isBlank()){
+					review_dialog.dispose();
+					Review.main(conn, user_id.getText(), business_id.getText(), review_id.getText());
+				}
+            }
+        });
+
+        JOptionPane optionPane = new JOptionPane(inputFields, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        review_dialog.setContentPane(optionPane);
+        review_dialog.setTitle("Business Input");
+        review_dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        review_dialog.pack();
+        review_dialog.setLocationRelativeTo(null);
+        review_dialog.setVisible(true);
     }
 
     public static void pop_search_button(Connection conn){
@@ -563,7 +700,7 @@ public class jdbcpostgreSQLGUI {
             }
         });
     }
-    
+
 	public static void close_conn(Connection conn) {
 		try {
 			conn.close();
