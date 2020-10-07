@@ -84,30 +84,51 @@ public class User{
 	public static void user_review_main(Connection conn, String user_id){
 		try{
 			int count = 0;
-			String N = JOptionPane.showInputDialog(null, "Enter number of records to query (recommended: <= 100k)");
+			double star = 0;
+			double funny = 0;
+			double useful = 0;
+			double cool = 0;
 			String output = "";
+			String sqlStatement = "";
+			
 			Statement stmt = conn.createStatement();
-			String sqlStatement = "SELECT \"Review_ID\",\"User_ID\",stars,useful,funny,cool FROM \"Review\" FULL OUTER JOIN reviewstars on \"Review\".\"Review_ID\" = reviewstars.review_id LIMIT " + N;
+			if (JOptionPane.showConfirmDialog(null, "Debug?") == JOptionPane.NO_OPTION) {
+				String N = JOptionPane.showInputDialog(null, "Enter number of records to query (recommended: <= 100k)");
+				sqlStatement = "SELECT * FROM review_name_star LIMIT " + N;
+			} else {
+				sqlStatement = "SELECT * FROM test";
+			}
+			//String N = JOptionPane.showInputDialog(null, "Enter number of records to query (recommended: <= 100k)");
+			//sqlStatement = "SELECT * FROM review_name_star LIMIT " + N;
 			System.out.println(sqlStatement);
 			ResultSet result = stmt.executeQuery(sqlStatement);
+			//System.out.println("Done querying");
 			
 			// check if user_id has >= 5 reviews
 			while(result.next()){
-				if (result.getString("User_ID").equals(user_id)) {
+				if (result.getString("User_ID") != null && result.getString("User_ID").equals(user_id)) {
 					++count;
+					star += result.getDouble("star");
+					funny += result.getInt("funny");
+					useful += result.getInt("useful");
+					cool += result.getInt("cool");
 				}
 			}
+			//System.out.println("Done comparing");
 			if (count < 5) {
 				JOptionPane.showMessageDialog(null, "User has less than 5 reviews.");
 				jdbcpostgreSQLGUI.close_conn(conn);
 			}
 			
-			// get user_compliment data
-			output += result.getString("useful") + " | " + result.getString("funny") + " | " + result.getString("cool") + "\n";
-			JOptionPane.showMessageDialog(null, output);
-			
-			// get avg of star rating
-			
+			// get user data
+			star = star/count;
+			funny = funny/count;
+			useful = useful/count;
+			cool = cool/count;
+			JOptionPane.showMessageDialog(null, "Average star: " + star + "\n"
+										      + "Average funny: " + funny + "\n"
+											  + "Average useful: " + useful + "\n"
+											  + "Average cool: " + cool);
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null,"Error accessing Database.");
