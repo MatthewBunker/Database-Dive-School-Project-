@@ -176,7 +176,7 @@ public class Business{
 			return Top5;
 		}
 
-	public static void local_restaurant_main(Connection conn, String city){
+	public static void local_restaurant_main(Connection conn, String city, String state){
 		try{
 			HashMap<String, Integer> business = new HashMap<String, Integer>();
 			Vector <String> business_vec = new Vector<String>();
@@ -184,7 +184,7 @@ public class Business{
 			Vector <String> local = new Vector<String>();
 			String output = "";
 			Statement stmt = conn.createStatement();
-			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM \"business\" FULL JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"Address\".\"city\"= \'" + city + "\'");
+			String sqlStatement = String.format("SELECT \"business\".\"Name\" FROM \"business\" FULL JOIN \"Address\" ON \"Address\".\"Business_ID\"=\"business\".\"business_id\" WHERE \"Address\".\"city\"= \'" + city + "\' AND \"Address\".\"state\"= \'" + state + "\'");
 			ResultSet result = stmt.executeQuery(sqlStatement);
 
 			while(result.next()){
@@ -220,29 +220,51 @@ public class Business{
 				}
 
 				sqlStatement = String.format("SELECT \"business\".\"business_id\" FROM \"business\" WHERE \"business\".\"Name\"= \'" + sb + "\'");
+				//System.out.println(sqlStatement);
 				result = stmt.executeQuery(sqlStatement);
-
 				while(result.next()){
 					business_id.add(result.getString("business_id"));
 				}
 			}
-
+			//error is somewhere in lines 233-243
 			int Max_count = 0;
 			int tip_count = 0;
 			String best_local = "temp";
 			for(int i = 0; i < business_id.size(); i++){
 				String local_business_id = business_id.elementAt(i);
 				sqlStatement = String.format("SELECT COUNT(\"tip\".\"Business_ID\") FROM \"tip\" WHERE \"tip\".\"Business_ID\"= \'" + local_business_id + "\'");
-				System.out.println(sqlStatement);
+				//System.out.println(sqlStatement);
 				result = stmt.executeQuery(sqlStatement);
 
-				tip_count = Integer.parseInt(result.getString("count"));
+				while(result.next()){
+					tip_count = Integer.parseInt(result.getString("count"));
+					//System.out.println(tip_count);
+				}
+				
 				if(tip_count > Max_count){
 					Max_count = tip_count;
 					best_local = local_business_id;
 				}
 			}
-			System.out.println(best_local + " " + Max_count);
+
+			if(!best_local.equals("temp")){
+				String ans = "";
+				sqlStatement = String.format("SELECT \"business\".\"Name\" FROM \"business\" WHERE \"business\".\"business_id\"= \'" + best_local + "\'");
+				result = stmt.executeQuery(sqlStatement);
+
+				while(result.next()){
+					ans = result.getString("Name");
+				}
+				output = "Top Local Business with most Tips\n" + "--------------------------------------------------\n";
+				output += "Business: " + ans + "\n" + "Tip Count: " + String.valueOf(Max_count);
+				JOptionPane.showMessageDialog(null, output);
+				//System.out.println(ans + " " + Max_count);
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "No business in this city were local and had a tip");
+				//System.out.println("No business in this city were local and had a tip");
+			}
+			
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null,"Error accessing Database.");
