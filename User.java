@@ -81,7 +81,36 @@ public class User{
 		}
 	}
 
-	public static void user_review_main(Connection conn, String str){
-		
+	public static void user_review_main(Connection conn, String user_id){
+		try{
+			int count = 0;
+			String N = JOptionPane.showInputDialog(null, "Enter number of records to query (recommended: <= 100k)");
+			String output = "";
+			Statement stmt = conn.createStatement();
+			String sqlStatement = "SELECT \"Review_ID\",\"User_ID\",stars,useful,funny,cool FROM \"Review\" FULL OUTER JOIN reviewstars on \"Review\".\"Review_ID\" = reviewstars.review_id LIMIT " + N;
+			System.out.println(sqlStatement);
+			ResultSet result = stmt.executeQuery(sqlStatement);
+			
+			// check if user_id has >= 5 reviews
+			while(result.next()){
+				if (result.getString("User_ID").equals(user_id)) {
+					++count;
+				}
+			}
+			if (count < 5) {
+				JOptionPane.showMessageDialog(null, "User has less than 5 reviews.");
+				jdbcpostgreSQLGUI.close_conn(conn);
+			}
+			
+			// get user_compliment data
+			output += result.getString("useful") + " | " + result.getString("funny") + " | " + result.getString("cool") + "\n";
+			JOptionPane.showMessageDialog(null, output);
+			
+			// get avg of star rating
+			
+		}
+		catch(Exception e){
+			JOptionPane.showMessageDialog(null,"Error accessing Database.");
+		}
 	}
 }
